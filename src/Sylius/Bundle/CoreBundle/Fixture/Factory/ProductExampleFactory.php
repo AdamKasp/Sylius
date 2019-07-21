@@ -80,6 +80,9 @@ class ProductExampleFactory extends AbstractExampleFactory implements ExampleFac
     /** @var RepositoryInterface */
     private $localeRepository;
 
+    /** @var RepositoryInterface */
+    private $taxCategoryRepository;
+
     /** @var \Faker\Generator */
     private $faker;
 
@@ -106,6 +109,7 @@ class ProductExampleFactory extends AbstractExampleFactory implements ExampleFac
         RepositoryInterface $productOptionRepository,
         RepositoryInterface $channelRepository,
         RepositoryInterface $localeRepository,
+        RepositoryInterface $taxCategoryRepository,
         ?FileLocatorInterface $fileLocator = null
     ) {
         $this->productFactory = $productFactory;
@@ -122,6 +126,7 @@ class ProductExampleFactory extends AbstractExampleFactory implements ExampleFac
         $this->productOptionRepository = $productOptionRepository;
         $this->channelRepository = $channelRepository;
         $this->localeRepository = $localeRepository;
+        $this->taxCategoryRepository = $taxCategoryRepository;
 
         $this->faker = \Faker\Factory::create();
         $this->optionsResolver = new OptionsResolver();
@@ -213,6 +218,10 @@ class ProductExampleFactory extends AbstractExampleFactory implements ExampleFac
             ->setAllowedTypes('images', 'array')
 
             ->setDefault('shipping_required', true)
+
+            ->setDefault('tax_category', null)
+            ->setAllowedTypes('tax_category', ['string', 'null', TaxCategoryInterface::class])
+            ->setNormalizer('tax_category', LazyOption::findOneBy($this->taxCategoryRepository, 'code'))
         ;
     }
 
@@ -262,6 +271,7 @@ class ProductExampleFactory extends AbstractExampleFactory implements ExampleFac
             $productVariant->setCode(sprintf('%s-variant-%d', $options['code'], $i));
             $productVariant->setOnHand($this->faker->randomNumber(1));
             $productVariant->setShippingRequired($options['shipping_required']);
+            $productVariant->setTaxCategory($options['tax_category']);
 
             foreach ($this->channelRepository->findAll() as $channel) {
                 $this->createChannelPricings($productVariant, $channel->getCode());

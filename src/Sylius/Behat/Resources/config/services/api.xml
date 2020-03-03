@@ -16,5 +16,12 @@
         <service id="Sylius\Behat\Client\ApiClientInterface" class="Sylius\Behat\Client\ApiPlatformClient">
             <argument type="service" id="test.client" />
         </service>
+
+        <service
+            id="Sylius\Behat\Client\ApiPlatformStateMachineClientInterface"
+            class="Sylius\Behat\Client\ApiPlatformStateMachineClient"
+        >
+            <argument type="service" id="test.client" />
+        </service>
     </services>
 </container>

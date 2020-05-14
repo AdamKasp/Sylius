@@ -159,8 +159,15 @@ final class SalesDataProvider implements SalesDataProviderInterface
         }
 
         foreach ($ordersTotals as $item) {
-            $salesData[$resultFormatter($item)] = number_format(abs((int) $item['total'] / 100), 2, '.', '');
+            $salesData[$resultFormatter($item)] = (int) $item['total'];
         }
+
+        $salesData = array_map(
+            static function (int $total): string {
+                return number_format(abs($total / 100), 2, '.', '');
+            },
+            $salesData
+        );
 
         return new SalesSummary($salesData);
     }

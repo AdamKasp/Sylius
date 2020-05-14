@@ -80,7 +80,7 @@ final class DashboardController
             // this data will be getting from UI after improve graph on dashboard
             $startDate = (new \DateTime('first day of next month last year'));
             $endDate = (new \DateTime('last day of this month'));
-            $interval = Interval::week();
+            $interval = Interval::day();
 
             $data['sales_summary'] = $this
                 ->salesDataProvider
